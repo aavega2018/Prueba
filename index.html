@@ -1,1 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Barbería El Estilo de Ángel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: system-ui; background:#111; color:#eee; margin:0; }
+    header { text-align:center; padding:2rem 1rem; background:#222; }
+    h1 { margin:0; font-size:2rem; }
+    main { max-width:700px; margin:2rem auto; background:#1a1a1a; padding:2rem; border-radius:12px; }
+    label { margin-top:1rem; display:block; }
+    input, select { width:100%; padding:.7rem; margin-top:.3rem; border-radius:6px; border:1px solid #444; background:#111; color:#eee; }
+    button { margin-top:1.5rem; padding:.8rem; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
+    .btn-primary { background:#0f9d58; color:#fff; }
+    .btn-secondary { background:#444; color:#fff; }
+    .status { margin-top:1rem; font-size:.9rem; }
+    .ok { color:#0f9d58; }
+    .error { color:#ff5252; }
+    #panel ul { list-style:none; padding:0; }
+    #panel li { background:#222; padding:.7rem; margin:.3rem 0; border-radius:6px; }
+  </style>
+</head>
+<body>
 
+<header>
+  <h1>Barbería El Estilo de Ángel</h1>
+  <p>Reserva tu turno entre 8:00 AM y 6:00 PM</p>
+</header>
+
+<main>
+  <h2>Reservar turno</h2>
+  <form id="bookingForm">
+    <label>Nombre completo</label>
+    <input id="nombre" required>
+
+    <label>Teléfono (WhatsApp)</label>
+    <input id="telefono" required>
+
+    <label>Dirección</label>
+    <input id="direccion" required>
+
+    <label>Fecha</label>
+    <input type="date" id="fecha" required>
+
+    <label>Hora</label>
+    <input type="time" id="hora" required>
+    <small>Horario permitido: 08:00 a 18:00</small>
+
+    <label>Servicio</label>
+    <select id="servicio" required>
+      <option value="">Selecciona…</option>
+      <option>Corte de cabello</option>
+      <option>Barba</option>
+      <option>Corte + Barba</option>
+    </select>
+
+    <button class="btn-primary">Reservar</button>
+  </form>
+
+  <h2 style="margin-top:2rem;">Cancelar turno</h2>
+  <form id="cancelForm">
+    <label>ID de reserva</label>
+    <input id="reservaId" required>
+    <button class="btn-secondary">Cancelar</button>
+  </form>
+
+  <div id="status" class="status"></div>
+
+  <h2 style="margin-top:2rem;">Panel de administración</h2>
+  <button class="btn-secondary" onclick="cargarTurnos()">Ver turnos del día</button>
+  <div id="panel" style="margin-top:1rem;"></div>
+</main>
+
+<script>
+  const SCRIPT_URL = "AQUI_PONES_LA_URL_DEL_WEB_APP";
+
+  function validarHora(hora) {
+    const [h, m] = hora.split(":").map(Number);
+    const total = h * 60 + m;
+    return total >= 480 && total <= 1080; // 08:00–18:00
+  }
+
+  document.getElementById("bookingForm").onsubmit = async (e) => {
+    e.preventDefault();
+    const status = document.getElementById("status");
+
+    const data = {
+      action: "create",
+      nombre: nombre.value,
+      telefono: telefono.value,
+      direccion: direccion.value,
+      fecha: fecha.value,
+      hora: hora.value,
+      servicio: servicio.value
+    };
+
+    if (!validarHora(data.hora)) {
+      status.textContent = "Hora fuera del rango permitido.";
+      status.className = "status error";
+      return;
+    }
+
+    const res = await fetch(SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify(data)
+    });
+
+    const txt = await res.text();
+    if (txt === "Hora ocupada") {
+      status.textContent = "Ese horario ya está reservado.";
+      status.className = "status error";
+      return;
+    }
+
+    status.textContent = "Turno reservado. Recibirás confirmación.";
+    status.className = "status ok";
+    bookingForm.reset();
+  };
+
+  document.getElementById("cancelForm").onsubmit = async (e) => {
+    e.preventDefault();
+    const status = document.getElementById("status");
+
+    await fetch(SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "cancel",
+        reservaId: reservaId.value
+      })
+    });
+
+    status.textContent = "Turno cancelado (si el ID es válido).";
+    status.className = "status ok";
+    cancelForm.reset();
+  };
+
+  async function cargarTurnos() {
+    const panel = document.getElementById("panel");
+    panel.textContent = "Cargando…";
+
+    const res = await fetch(SCRIPT_URL + "?action=list");
+    const data = await res.json();
+
+    let html = "<h3>Turnos de hoy</h3><ul>";
+    data.forEach(t => {
+      html += `<li>${t.hora} — ${t.nombre} (${t.servicio}) [${t.estado}]</li>`;
+    });
+    html += "</ul>";
+
+    panel.innerHTML = html;
+  }
+</script>
+
+</body>
+</html>
