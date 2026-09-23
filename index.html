@@ -1,1 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Barbería El Estilo del Angel – Reserva tu turno</title>
 
+<style>
+/* Fondo premium */
+body {
+  font-family: 'Arial', sans-serif;
+  background: radial-gradient(circle at top, #111 0%, #000 60%);
+  padding: 30px;
+  color: #fff;
+}
+
+/* Contenedor principal */
+.form-container {
+  background: #1a1a1a;
+  max-width: 480px;
+  margin: auto;
+  padding: 30px;
+  border-radius: 14px;
+  box-shadow: 0 0 35px rgba(0,0,0,0.7);
+  border: 3px solid #444;
+  position: relative;
+}
+
+/* Borde superior estilo barber pole */
+.form-container::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: 0;
+  width: 100%;
+  height: 12px;
+  background: repeating-linear-gradient(
+    45deg,
+    #d32f2f 0px,
+    #d32f2f 10px,
+    #ffffff 10px,
+    #ffffff 20px,
+    #1976d2 20px,
+    #1976d2 30px
+  );
+  border-radius: 8px 8px 0 0;
+}
+
+/* Icono premium */
+.icon {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.icon img {
+  width: 90px;
+  filter: drop-shadow(0 0 8px rgba(255,255,255,0.4));
+}
+
+/* Título */
+h2 {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 10px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Separador */
+.separator {
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #d32f2f, #ffffff, #1976d2);
+  margin: 10px auto 25px auto;
+  border-radius: 2px;
+}
+
+/* Inputs */
+input, select {
+  width: 100%;
+  padding: 14px;
+  margin: 12px 0;
+  border-radius: 8px;
+  border: 2px solid #333;
+  background: #0f0f0f;
+  color: #fff;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+input:focus, select:focus {
+  border-color: #d32f2f;
+  outline: none;
+  box-shadow: 0 0 10px rgba(211,47,47,0.5);
+}
+
+/* Botón premium */
+button {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(90deg, #d32f2f, #000, #1976d2);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  cursor: pointer;
+  font-weight: bold;
+  letter-spacing: 1px;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 15px rgba(255,255,255,0.3);
+}
+
+/* Mensajes */
+.status {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.status.ok {
+  background: #c8f7c5;
+  color: #2e7d32;
+}
+
+.status.error {
+  background: #f8d7da;
+  color: #842029;
+}
+</style>
+</head>
+
+<body>
+
+<div class="form-container">
+
+  <div class="icon">
+    <img src="https://cdn-icons-png.flaticon.com/512/2921/2921822.png">
+  </div>
+
+  <h2>Reserva tu turno</h2>
+  <div class="separator"></div>
+
+  <form id="bookingForm">
+    <input type="text" id="nombre" placeholder="Nombre completo" required>
+    <input type="text" id="telefono" placeholder="Teléfono" required>
+    <input type="text" id="direccion" placeholder="Dirección" required>
+
+    <label>Fecha:</label>
+    <input type="date" id="fecha" required>
+
+    <label>Hora:</label>
+    <input type="time" id="hora" required>
+
+    <label>Servicio:</label>
+    <select id="servicio" required>
+      <option value="Corte">Corte</option>
+      <option value="Barba">Barba</option>
+      <option value="Corte + Barba">Corte + Barba</option>
+    </select>
+
+    <button type="submit">Reservar turno</button>
+
+    <div id="status" class="status"></div>
+  </form>
+
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxQQCWkTnxcvYBzPU5dBlsi4REaHx9zy8rTvPFcInVTkRvfE_whPfqCCQ087ZNQ0CTV/exec";
+
+document.getElementById("bookingForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const status = document.getElementById("status");
+
+  const data = {
+    action: "create",
+    nombre: document.getElementById("nombre").value,
+    telefono: document.getElementById("telefono").value,
+    direccion: document.getElementById("direccion").value,
+    fecha: document.getElementById("fecha").value,
+    hora: document.getElementById("hora").value,
+    servicio: document.getElementById("servicio").value
+  };
+
+  const res = await fetch(SCRIPT_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "text/plain"
+    },
+    body: JSON.stringify(data)
+  });
+
+  const txt = await res.text();
+
+  if (txt === "YaReservado") {
+    status.textContent = "Ya tienes una reserva para ese día.";
+    status.className = "status error";
+    return;
+  }
+
+  if (txt === "ReservaActiva") {
+    status.textContent = "Ya tienes una reserva activa. Cancélala para crear otra.";
+    status.className = "status error";
+    return;
+  }
+
+  if (txt === "HoraOcupada") {
+    status.textContent = "Ese horario ya está reservado.";
+    status.className = "status error";
+    return;
+  }
+
+  if (txt === "ServicioDuplicado") {
+    status.textContent = "Ya reservaste este servicio para ese día.";
+    status.className = "status error";
+    return;
+  }
+
+  if (txt === "SemanaLimitada") {
+    status.textContent = "Solo puedes reservar una vez por semana.";
+    status.className = "status error";
+    return;
+  }
+
+  if (txt === "OK") {
+    status.textContent = "Turno reservado correctamente.";
+    status.className = "status ok";
+    document.getElementById("bookingForm").reset();
+    return;
+  }
+
+  status.textContent = "Error inesperado.";
+  status.className = "status error";
+});
+</script>
+
+</body>
+</html>
