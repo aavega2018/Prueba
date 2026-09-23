@@ -1,246 +1,241 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Barbería El Estilo del Angel – Reserva tu turno</title>
-
-<style>
-/* Fondo premium */
-body {
-  font-family: 'Arial', sans-serif;
-  background: radial-gradient(circle at top, #111 0%, #000 60%);
-  padding: 30px;
-  color: #fff;
-}
-
-/* Contenedor principal */
-.form-container {
-  background: #1a1a1a;
-  max-width: 480px;
-  margin: auto;
-  padding: 30px;
-  border-radius: 14px;
-  box-shadow: 0 0 35px rgba(0,0,0,0.7);
-  border: 3px solid #444;
-  position: relative;
-}
-
-/* Borde superior estilo barber pole */
-.form-container::before {
-  content: "";
-  position: absolute;
-  top: -12px;
-  left: 0;
-  width: 100%;
-  height: 12px;
-  background: repeating-linear-gradient(
-    45deg,
-    #d32f2f 0px,
-    #d32f2f 10px,
-    #ffffff 10px,
-    #ffffff 20px,
-    #1976d2 20px,
-    #1976d2 30px
-  );
-  border-radius: 8px 8px 0 0;
-}
-
-/* Icono premium */
-.icon {
-  text-align: center;
-  margin-bottom: 15px;
-}
-
-.icon img {
-  width: 90px;
-  filter: drop-shadow(0 0 8px rgba(255,255,255,0.4));
-}
-
-/* Título */
-h2 {
-  text-align: center;
-  font-size: 28px;
-  margin-bottom: 10px;
-  font-weight: bold;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
-/* Separador */
-.separator {
-  width: 80px;
-  height: 4px;
-  background: linear-gradient(90deg, #d32f2f, #ffffff, #1976d2);
-  margin: 10px auto 25px auto;
-  border-radius: 2px;
-}
-
-/* Inputs */
-input, select {
-  width: 100%;
-  padding: 14px;
-  margin: 12px 0;
-  border-radius: 8px;
-  border: 2px solid #333;
-  background: #0f0f0f;
-  color: #fff;
-  font-size: 16px;
-  transition: 0.3s;
-}
-
-input:focus, select:focus {
-  border-color: #d32f2f;
-  outline: none;
-  box-shadow: 0 0 10px rgba(211,47,47,0.5);
-}
-
-/* Botón premium */
-button {
-  width: 100%;
-  padding: 15px;
-  background: linear-gradient(90deg, #d32f2f, #000, #1976d2);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 18px;
-  cursor: pointer;
-  font-weight: bold;
-  letter-spacing: 1px;
-  transition: 0.3s;
-}
-
-button:hover {
-  transform: scale(1.03);
-  box-shadow: 0 0 15px rgba(255,255,255,0.3);
-}
-
-/* Mensajes */
-.status {
-  margin-top: 15px;
-  padding: 12px;
-  border-radius: 6px;
-  text-align: center;
-  font-weight: bold;
-}
-
-.status.ok {
-  background: #c8f7c5;
-  color: #2e7d32;
-}
-
-.status.error {
-  background: #f8d7da;
-  color: #842029;
-}
-</style>
+  <meta charset="UTF-8">
+  <title>Barbería El Estilo de Ángel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #111;
+      color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      text-align: center;
+      padding: 2rem 1rem;
+      background: linear-gradient(135deg, #111, #333);
+      border-bottom: 1px solid #444;
+    }
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+      letter-spacing: 1px;
+    }
+    .subtitle {
+      margin-top: .5rem;
+      color: #bbb;
+    }
+    main {
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 1.5rem;
+      background: #1a1a1a;
+      border-radius: 12px;
+      border: 1px solid #333;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-size: .9rem;
+      color: #ddd;
+    }
+    input, select {
+      width: 100%;
+      padding: .6rem .7rem;
+      margin-top: .3rem;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #111;
+      color: #f5f5f5;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #0f9d58;
+    }
+    .row {
+      display: flex;
+      gap: 1rem;
+    }
+    .row > div {
+      flex: 1;
+    }
+    .note {
+      font-size: .8rem;
+      color: #999;
+      margin-top: .3rem;
+    }
+    button {
+      margin-top: 1.5rem;
+      padding: .7rem 1.2rem;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn-primary {
+      background: #0f9d58;
+      color: #fff;
+    }
+    .btn-secondary {
+      background: #444;
+      color: #eee;
+      margin-left: .5rem;
+    }
+    .status {
+      margin-top: 1rem;
+      font-size: .9rem;
+    }
+    .status.ok {
+      color: #0f9d58;
+    }
+    .status.error {
+      color: #ff5252;
+    }
+  </style>
 </head>
-
 <body>
+  <header>
+    <h1>Barbería El Estilo de Ángel</h1>
+    <p class="subtitle">Reserva tu turno de 8:00 AM a 6:00 PM</p>
+  </header>
 
-<div class="form-container">
+  <main>
+    <h2>Reservar turno</h2>
+    <form id="bookingForm">
+      <label>Nombre completo</label>
+      <input type="text" id="nombre" required>
 
-  <div class="icon">
-    <img src="https://cdn-icons-png.flaticon.com/512/2921/2921822.png">
-  </div>
+      <label>Teléfono (WhatsApp)</label>
+      <input type="tel" id="telefono" required>
 
-  <h2>Reserva tu turno</h2>
-  <div class="separator"></div>
+      <label>Dirección</label>
+      <input type="text" id="direccion" required>
 
-  <form id="bookingForm">
-    <input type="text" id="nombre" placeholder="Nombre completo" required>
-    <input type="text" id="telefono" placeholder="Teléfono" required>
-    <input type="text" id="direccion" placeholder="Dirección" required>
+      <div class="row">
+        <div>
+          <label>Fecha</label>
+          <input type="date" id="fecha" required>
+        </div>
+        <div>
+          <label>Hora</label>
+          <input type="time" id="hora" required>
+          <div class="note">Solo entre 08:00 y 18:00</div>
+        </div>
+      </div>
 
-    <label>Fecha:</label>
-    <input type="date" id="fecha" required>
+      <label>Servicio</label>
+      <select id="servicio" required>
+        <option value="">Selecciona...</option>
+        <option value="Corte de cabello">Corte de cabello</option>
+        <option value="Barba">Barba</option>
+        <option value="Corte + Barba">Corte + Barba</option>
+      </select>
 
-    <label>Hora:</label>
-    <input type="time" id="hora" required>
+      <button type="submit" class="btn-primary">Reservar turno</button>
+    </form>
 
-    <label>Servicio:</label>
-    <select id="servicio" required>
-      <option value="Corte">Corte</option>
-      <option value="Barba">Barba</option>
-      <option value="Corte + Barba">Corte + Barba</option>
-    </select>
-
-    <button type="submit">Reservar turno</button>
+    <h2 style="margin-top:2rem;">Cancelar turno</h2>
+    <p class="note">Usa el ID de reserva que recibiste por WhatsApp o correo.</p>
+    <form id="cancelForm">
+      <label>ID de reserva</label>
+      <input type="text" id="reservaId" required>
+      <button type="submit" class="btn-secondary">Cancelar turno</button>
+    </form>
 
     <div id="status" class="status"></div>
-  </form>
+  </main>
 
-</div>
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyETM-kfbIkkrUqbg2kjZfHdGzY1ngPSiMBeWyKRXYiaMBfp2PFAimWQGGzHXiIeMSX/exec";
 
-<script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyntWxRoNbKOBngwmne65i9NKz1kYTTpyWirYSIBw-AnHkZ8qOQhdizL8VXr7azni03/exec";
+    function validarHora(horaStr) {
+      // horaStr formato HH:MM
+      const [h, m] = horaStr.split(":").map(Number);
+      const totalMin = h * 60 + m;
+      const min = 8 * 60;   // 08:00
+      const max = 18 * 60;  // 18:00
+      return totalMin >= min && totalMin <= max;
+    }
 
-document.getElementById("bookingForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
+    document.getElementById("bookingForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const status = document.getElementById("status");
+      status.textContent = "";
+      status.className = "status";
 
-  const status = document.getElementById("status");
+      const nombre = document.getElementById("nombre").value.trim();
+      const telefono = document.getElementById("telefono").value.trim();
+      const direccion = document.getElementById("direccion").value.trim();
+      const fecha = document.getElementById("fecha").value;
+      const hora = document.getElementById("hora").value;
+      const servicio = document.getElementById("servicio").value;
 
-  const data = {
-    action: "create",
-    nombre: document.getElementById("nombre").value,
-    telefono: document.getElementById("telefono").value,
-    direccion: document.getElementById("direccion").value,
-    fecha: document.getElementById("fecha").value,
-    hora: document.getElementById("hora").value,
-    servicio: document.getElementById("servicio").value
-  };
+      if (!validarHora(hora)) {
+        status.textContent = "La hora debe estar entre 08:00 y 18:00.";
+        status.classList.add("error");
+        return;
+      }
 
-  const res = await fetch(SCRIPT_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Accept": "text/plain"
-    },
-    body: JSON.stringify(data)
-  });
+      const payload = {
+        action: "create",
+        nombre,
+        telefono,
+        direccion,
+        fecha,
+        hora,
+        servicio
+      };
 
-  const txt = await res.text();
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+        status.textContent = "Turno reservado. Recibirás confirmación por WhatsApp o correo.";
+        status.classList.add("ok");
+        document.getElementById("bookingForm").reset();
+      } catch (err) {
+        status.textContent = "Error al reservar. Intenta de nuevo más tarde.";
+        status.classList.add("error");
+      }
+    });
 
-  if (txt === "YaReservado") {
-    status.textContent = "Ya tienes una reserva para ese día.";
-    status.className = "status error";
-    return;
-  }
+    document.getElementById("cancelForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const status = document.getElementById("status");
+      status.textContent = "";
+      status.className = "status";
 
-  if (txt === "ReservaActiva") {
-    status.textContent = "Ya tienes una reserva activa. Cancélala para crear otra.";
-    status.className = "status error";
-    return;
-  }
+      const reservaId = document.getElementById("reservaId").value.trim();
+      const payload = {
+        action: "cancel",
+        reservaId
+      };
 
-  if (txt === "HoraOcupada") {
-    status.textContent = "Ese horario ya está reservado.";
-    status.className = "status error";
-    return;
-  }
-
-  if (txt === "ServicioDuplicado") {
-    status.textContent = "Ya reservaste este servicio para ese día.";
-    status.className = "status error";
-    return;
-  }
-
-  if (txt === "SemanaLimitada") {
-    status.textContent = "Solo puedes reservar una vez por semana.";
-    status.className = "status error";
-    return;
-  }
-
-  if (txt === "OK") {
-    status.textContent = "Turno reservado correctamente.";
-    status.className = "status ok";
-    document.getElementById("bookingForm").reset();
-    return;
-  }
-
-  status.textContent = "Error inesperado.";
-  status.className = "status error";
-});
-</script>
-
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+        status.textContent = "Turno cancelado (si el ID es válido).";
+        status.classList.add("ok");
+        document.getElementById("cancelForm").reset();
+      } catch (err) {
+        status.textContent = "Error al cancelar. Intenta de nuevo.";
+        status.classList.add("error");
+      }
+    });
+  </script>
 </body>
 </html>
