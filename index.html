@@ -66,13 +66,7 @@ document.getElementById("bookingForm").addEventListener("submit", async (e) => {
   const txt = await res.text();
 
   if (txt === "YaReservado") {
-    status.textContent = "Ya tienes una reserva para ese día.";
-    status.className = "status error";
-    return;
-  }
-
-  if (txt === "ReservaActiva") {
-    status.textContent = "Ya tienes una reserva activa. Cancélala para crear otra.";
+    status.textContent = "Ya tienes una reserva para ese día. Cancélala si deseas cambiarla.";
     status.className = "status error";
     return;
   }
@@ -83,28 +77,14 @@ document.getElementById("bookingForm").addEventListener("submit", async (e) => {
     return;
   }
 
-  if (txt === "ServicioDuplicado") {
-    status.textContent = "Ya reservaste este servicio para ese día.";
-    status.className = "status error";
-    return;
-  }
-
-  if (txt === "SemanaLimitada") {
-    status.textContent = "Solo puedes reservar una vez por semana.";
-    status.className = "status error";
-    return;
-  }
-
   if (txt === "OK") {
     status.textContent = "Turno reservado correctamente.";
     status.className = "status ok";
-    document.getElementById("bookingForm").reset();
+    bookingForm.reset();
     return;
   }
-
-  status.textContent = "Error inesperado.";
-  status.className = "status error";
-});
+}
+);
 </script>
 
 </body>
