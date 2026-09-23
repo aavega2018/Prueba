@@ -197,6 +197,7 @@
   },
   body: JSON.stringify(payload)
 });
+
         status.textContent = "Turno reservado. Recibirás confirmación por WhatsApp o correo.";
         status.classList.add("ok");
         document.getElementById("bookingForm").reset();
@@ -226,6 +227,7 @@
   },
   body: JSON.stringify(payload)
 });
+
 
         status.textContent = "Turno cancelado (si el ID es válido).";
         status.classList.add("ok");
