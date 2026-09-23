@@ -1,163 +1,110 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Barbería El Estilo de Ángel</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body { font-family: system-ui; background:#111; color:#eee; margin:0; }
-    header { text-align:center; padding:2rem 1rem; background:#222; }
-    h1 { margin:0; font-size:2rem; }
-    main { max-width:700px; margin:2rem auto; background:#1a1a1a; padding:2rem; border-radius:12px; }
-    label { margin-top:1rem; display:block; }
-    input, select { width:100%; padding:.7rem; margin-top:.3rem; border-radius:6px; border:1px solid #444; background:#111; color:#eee; }
-    button { margin-top:1.5rem; padding:.8rem; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
-    .btn-primary { background:#0f9d58; color:#fff; }
-    .btn-secondary { background:#444; color:#fff; }
-    .status { margin-top:1rem; font-size:.9rem; }
-    .ok { color:#0f9d58; }
-    .error { color:#ff5252; }
-    #panel ul { list-style:none; padding:0; }
-    #panel li { background:#222; padding:.7rem; margin:.3rem 0; border-radius:6px; }
-  </style>
+<meta charset="UTF-8">
+<title>Reserva tu turno</title>
+<style>
+body { font-family: Arial; background:#f5f5f5; padding:20px; }
+form { background:#fff; padding:20px; border-radius:10px; max-width:400px; margin:auto; }
+input, select { width:100%; padding:10px; margin:8px 0; }
+button { background:#000; color:#fff; padding:12px; width:100%; border:none; cursor:pointer; }
+.status { margin-top:10px; padding:10px; border-radius:5px; text-align:center; }
+.status.ok { background:#c8f7c5; color:#2e7d32; }
+.status.error { background:#f8d7da; color:#842029; }
+</style>
 </head>
 <body>
 
-<header>
-  <h1>Barbería El Estilo de Ángel</h1>
-  <p>Reserva tu turno entre 8:00 AM y 6:00 PM</p>
-</header>
+<h2>Reserva tu turno</h2>
 
-<main>
-  <h2>Reservar turno</h2>
-  <form id="bookingForm">
-    <label>Nombre completo</label>
-    <input id="nombre" required>
+<form id="bookingForm">
+  <input type="text" id="nombre" placeholder="Nombre" required>
+  <input type="text" id="telefono" placeholder="Teléfono" required>
+  <input type="text" id="direccion" placeholder="Dirección" required>
 
-    <label>Teléfono (WhatsApp)</label>
-    <input id="telefono" required>
+  <label>Fecha:</label>
+  <input type="date" id="fecha" required>
 
-    <label>Dirección</label>
-    <input id="direccion" required>
+  <label>Hora:</label>
+  <input type="time" id="hora" required>
 
-    <label>Fecha</label>
-    <input type="date" id="fecha" required>
+  <label>Servicio:</label>
+  <select id="servicio" required>
+    <option value="Corte">Corte</option>
+    <option value="Barba">Barba</option>
+    <option value="Corte + Barba">Corte + Barba</option>
+  </select>
 
-    <label>Hora</label>
-    <input type="time" id="hora" required>
-    <small>Horario permitido: 08:00 a 18:00</small>
-
-    <label>Servicio</label>
-    <select id="servicio" required>
-      <option value="">Selecciona…</option>
-      <option>Corte de cabello</option>
-      <option>Barba</option>
-      <option>Corte + Barba</option>
-    </select>
-
-    <button class="btn-primary">Reservar</button>
-  </form>
-
-  <h2 style="margin-top:2rem;">Cancelar turno</h2>
-  <form id="cancelForm">
-    <label>ID de reserva</label>
-    <input id="reservaId" required>
-    <button class="btn-secondary">Cancelar</button>
-  </form>
+  <button type="submit">Reservar</button>
 
   <div id="status" class="status"></div>
-
-  <h2 style="margin-top:2rem;">Panel de administración</h2>
-  <button class="btn-secondary" onclick="cargarTurnos()">Ver turnos del día</button>
-  <div id="panel" style="margin-top:1rem;"></div>
-</main>
+</form>
 
 <script>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyETM-kfbIkkrUqbg2kjZfHdGzY1ngPSiMBeWyKRXYiaMBfp2PFAimWQGGzHXiIeMSX/exec";
+const SCRIPT_URL = "https://aavega2018.github.io/Prueba/";
 
-  function validarHora(hora) {
-    const [h, m] = hora.split(":").map(Number);
-    const total = h * 60 + m;
-    return total >= 480 && total <= 1080; // 08:00–18:00
-  }
+document.getElementById("bookingForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-  document.getElementById("bookingForm").onsubmit = async (e) => {
-    e.preventDefault();
-    const status = document.getElementById("status");
+  const status = document.getElementById("status");
 
-    const data = {
-      action: "create",
-      nombre: nombre.value,
-      telefono: telefono.value,
-      direccion: direccion.value,
-      fecha: fecha.value,
-      hora: hora.value,
-      servicio: servicio.value
-    };
-
-    if (!validarHora(data.hora)) {
-      status.textContent = "Hora fuera del rango permitido.";
-      status.className = "status error";
-      return;
-    }
-
-    const res = await fetch(SCRIPT_URL, {
-      method: "POST",
-      body: JSON.stringify(data)
-    });
-
-    const txt = await res.text();
-
-if (txt === "YaReservado") {
-  status.textContent = "Ya tienes una reserva para ese día. Cancélala si deseas cambiarla.";
-  status.className = "status error";
-  return;
-}
-
-if (txt === "HoraOcupada") {
-  status.textContent = "Ese horario ya está reservado.";
-  status.className = "status error";
-  return;
-}
-
-if (txt === "OK") {
-  status.textContent = "Turno reservado correctamente.";
-  status.className = "status ok";
-  bookingForm.reset();
-}
-
-  document.getElementById("cancelForm").onsubmit = async (e) => {
-    e.preventDefault();
-    const status = document.getElementById("status");
-
-    await fetch(SCRIPT_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        action: "cancel",
-        reservaId: reservaId.value
-      })
-    });
-
-    status.textContent = "Turno cancelado (si el ID es válido).";
-    status.className = "status ok";
-    cancelForm.reset();
+  const data = {
+    action: "create",
+    nombre: document.getElementById("nombre").value,
+    telefono: document.getElementById("telefono").value,
+    direccion: document.getElementById("direccion").value,
+    fecha: document.getElementById("fecha").value,
+    hora: document.getElementById("hora").value,
+    servicio: document.getElementById("servicio").value
   };
 
-  async function cargarTurnos() {
-    const panel = document.getElementById("panel");
-    panel.textContent = "Cargando…";
+  const res = await fetch(SCRIPT_URL, {
+    method: "POST",
+    body: JSON.stringify(data)
+  });
 
-    const res = await fetch(SCRIPT_URL + "?action=list");
-    const data = await res.json();
+  const txt = await res.text();
 
-    let html = "<h3>Turnos de hoy</h3><ul>";
-    data.forEach(t => {
-      html += `<li>${t.hora} — ${t.nombre} (${t.servicio}) [${t.estado}]</li>`;
-    });
-    html += "</ul>";
-
-    panel.innerHTML = html;
+  if (txt === "YaReservado") {
+    status.textContent = "Ya tienes una reserva para ese día.";
+    status.className = "status error";
+    return;
   }
+
+  if (txt === "ReservaActiva") {
+    status.textContent = "Ya tienes una reserva activa. Cancélala para crear otra.";
+    status.className = "status error";
+    return;
+  }
+
+  if (txt === "HoraOcupada") {
+    status.textContent = "Ese horario ya está reservado.";
+    status.className = "status error";
+    return;
+  }
+
+  if (txt === "ServicioDuplicado") {
+    status.textContent = "Ya reservaste este servicio para ese día.";
+    status.className = "status error";
+    return;
+  }
+
+  if (txt === "SemanaLimitada") {
+    status.textContent = "Solo puedes reservar una vez por semana.";
+    status.className = "status error";
+    return;
+  }
+
+  if (txt === "OK") {
+    status.textContent = "Turno reservado correctamente.";
+    status.className = "status ok";
+    document.getElementById("bookingForm").reset();
+    return;
+  }
+
+  status.textContent = "Error inesperado.";
+  status.className = "status error";
+});
 </script>
 
 </body>
