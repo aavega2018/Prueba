@@ -67,28 +67,44 @@ document.getElementById("bookingForm").addEventListener("submit", async (e) => {
   body: JSON.stringify(data)
 });
 
+const txt = await res.text();
 
-  const txt = await res.text();
+if (txt === "YaReservado") {
+  status.textContent = "Ya tienes una reserva para ese día.";
+  status.className = "status error";
+  return;
+}
 
-  if (txt === "YaReservado") {
-    status.textContent = "Ya tienes una reserva para ese día. Cancélala si deseas cambiarla.";
-    status.className = "status error";
-    return;
-  }
+if (txt === "ReservaActiva") {
+  status.textContent = "Ya tienes una reserva activa. Cancélala para crear otra.";
+  status.className = "status error";
+  return;
+}
 
-  if (txt === "HoraOcupada") {
-    status.textContent = "Ese horario ya está reservado.";
-    status.className = "status error";
-    return;
-  }
+if (txt === "HoraOcupada") {
+  status.textContent = "Ese horario ya está reservado.";
+  status.className = "status error";
+  return;
+}
 
-  if (txt === "OK") {
-    status.textContent = "Turno reservado correctamente.";
-    status.className = "status ok";
-    bookingForm.reset();
-    return;
-  }
-});
+if (txt === "ServicioDuplicado") {
+  status.textContent = "Ya reservaste este servicio para ese día.";
+  status.className = "status error";
+  return;
+}
+
+if (txt === "SemanaLimitada") {
+  status.textContent = "Solo puedes reservar una vez por semana.";
+  status.className = "status error";
+  return;
+}
+
+if (txt === "OK") {
+  status.textContent = "Turno reservado correctamente.";
+  status.className = "status ok";
+  bookingForm.reset();
+  return;
+}
 </script>
 </body>
 </html>
