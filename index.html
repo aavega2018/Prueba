@@ -191,13 +191,12 @@
 
       try {
         const res = await fetch(SCRIPT_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(payload)
-        });
+  method: "POST",
+  headers: {
+    "Content-Type": "text/plain;charset=utf-8"
+  },
+  body: JSON.stringify(payload)
+});
         status.textContent = "Turno reservado. Recibirás confirmación por WhatsApp o correo.";
         status.classList.add("ok");
         document.getElementById("bookingForm").reset();
@@ -221,13 +220,13 @@
 
       try {
         const res = await fetch(SCRIPT_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(payload)
-        });
+  method: "POST",
+  headers: {
+    "Content-Type": "text/plain;charset=utf-8"
+  },
+  body: JSON.stringify(payload)
+});
+
         status.textContent = "Turno cancelado (si el ID es válido).";
         status.classList.add("ok");
         document.getElementById("cancelForm").reset();
