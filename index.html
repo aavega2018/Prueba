@@ -107,16 +107,24 @@
     });
 
     const txt = await res.text();
-    if (txt === "Hora ocupada") {
-      status.textContent = "Ese horario ya está reservado.";
-      status.className = "status error";
-      return;
-    }
 
-    status.textContent = "Turno reservado. Recibirás confirmación.";
-    status.className = "status ok";
-    bookingForm.reset();
-  };
+if (txt === "YaReservado") {
+  status.textContent = "Ya tienes una reserva para ese día. Cancélala si deseas cambiarla.";
+  status.className = "status error";
+  return;
+}
+
+if (txt === "HoraOcupada") {
+  status.textContent = "Ese horario ya está reservado.";
+  status.className = "status error";
+  return;
+}
+
+if (txt === "OK") {
+  status.textContent = "Turno reservado correctamente.";
+  status.className = "status ok";
+  bookingForm.reset();
+}
 
   document.getElementById("cancelForm").onsubmit = async (e) => {
     e.preventDefault();
