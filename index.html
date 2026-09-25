@@ -160,82 +160,186 @@
       return totalMin >= min && totalMin <= max;
     }
 
-    document.getElementById("bookingForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const status = document.getElementById("status");
-      status.textContent = "";
-      status.className = "status";
+   document.getElementById("bookingForm").addEventListener("submit", async (e) => {
 
-      const nombre = document.getElementById("nombre").value.trim();
-      const telefono = document.getElementById("telefono").value.trim();
-      const direccion = document.getElementById("direccion").value.trim();
-      const fecha = document.getElementById("fecha").value;
-      const hora = document.getElementById("hora").value;
-      const servicio = document.getElementById("servicio").value;
+  e.preventDefault();
 
-      if (!validarHora(hora)) {
-        status.textContent = "La hora debe estar entre 08:00 y 18:00.";
-        status.classList.add("error");
-        return;
-      }
-      const payload = {
-        action: "create",
-        nombre,
-        telefono,
-        direccion,
-        fecha,
-        hora,
-        servicio
-      };
+  const status = document.getElementById("status");
 
-      try {
-        const res = await fetch(SCRIPT_URL, {
-  method: "POST",
-  headers: {
-    "Content-Type": "text/plain;charset=utf-8"
-  },
-  body: JSON.stringify(payload)
-});
+  status.textContent = "Procesando reserva...";
+  status.className = "status";
 
-        status.textContent = "Turno reservado. Recibirás confirmación por WhatsApp o correo.";
-        status.classList.add("ok");
-        document.getElementById("bookingForm").reset();
-      } catch (err) {
-        status.textContent = "Error al reservar. Intenta de nuevo más tarde.";
-        status.classList.add("error");
-      }
+
+  const nombre = document.getElementById("nombre").value.trim();
+  const telefono = document.getElementById("telefono").value.trim();
+  const direccion = document.getElementById("direccion").value.trim();
+  const fecha = document.getElementById("fecha").value;
+  const hora = document.getElementById("hora").value;
+  const servicio = document.getElementById("servicio").value;
+
+
+  /******************************
+   * VALIDAR HORA
+   ******************************/
+  if (!validarHora(hora)) {
+
+    status.textContent =
+      "La hora debe estar entre 08:00 y 18:00.";
+
+    status.className = "status error";
+
+    return;
+  }
+
+
+  /******************************
+   * VALIDAR FECHA
+   ******************************/
+  if (!fecha) {
+
+    status.textContent =
+      "Selecciona una fecha.";
+
+    status.className = "status error";
+
+    return;
+  }
+
+
+  /******************************
+   * CREAR PAYLOAD
+   ******************************/
+  const payload = {
+
+    action: "create",
+
+    nombre: nombre,
+
+    telefono: telefono,
+
+    direccion: direccion,
+
+    fecha: fecha,
+
+    hora: hora,
+
+    servicio: servicio
+  };
+
+
+  try {
+
+    await fetch(SCRIPT_URL, {
+
+      method: "POST",
+
+      mode: "no-cors",
+
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+
+      body: JSON.stringify(payload)
     });
 
-    document.getElementById("cancelForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const status = document.getElementById("status");
-      status.textContent = "";
-      status.className = "status";
 
-      const reservaId = document.getElementById("reservaId").value.trim();
-      const payload = {
-        action: "cancel",
-        reservaId
-      };
+    /******************************
+     * RESERVA ENVIADA
+     ******************************/
+    status.textContent =
+      "✅ Turno reservado correctamente. Recibirás la confirmación por WhatsApp.";
 
-      try {
-        const res = await fetch(SCRIPT_URL, {
-  method: "POST",
-  headers: {
-    "Content-Type": "text/plain;charset=utf-8"
-  },
-  body: JSON.stringify(payload)
+    status.className = "status ok";
+
+
+    document
+      .getElementById("bookingForm")
+      .reset();
+
+
+  } catch (err) {
+
+    console.error(err);
+
+    status.textContent =
+      "No se pudo enviar la reserva. Intenta nuevamente.";
+
+    status.className = "status error";
+  }
+
 });
 
+document.getElementById("cancelForm").addEventListener("submit", async (e) => {
 
-        status.textContent = "Turno cancelado (si el ID es válido).";
-        status.classList.add("ok");
-        document.getElementById("cancelForm").reset();
-      } catch (err) {
-        status.textContent = "Error al cancelar. Intenta de nuevo.";
-        status.classList.add("error");
-      }
+  e.preventDefault();
+
+  const status = document.getElementById("status");
+
+  status.textContent = "Procesando cancelación...";
+  status.className = "status";
+
+
+  const reservaId =
+    document.getElementById("reservaId").value.trim();
+
+
+  if (!reservaId) {
+
+    status.textContent =
+      "Introduce el ID de la reserva.";
+
+    status.className = "status error";
+
+    return;
+  }
+
+
+  const payload = {
+
+    action: "cancel",
+
+    reservaId: reservaId
+  };
+
+
+  try {
+
+    await fetch(SCRIPT_URL, {
+
+      method: "POST",
+
+      mode: "no-cors",
+
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+
+      body: JSON.stringify(payload)
     });
+
+
+    status.textContent =
+      "✅ Solicitud de cancelación enviada.";
+
+    status.className = "status ok";
+
+
+    document
+      .getElementById("cancelForm")
+      .reset();
+
+
+  } catch (err) {
+
+    console.error(err);
+
+    status.textContent =
+      "No se pudo enviar la cancelación.";
+
+    status.className = "status error";
+  }
+
+});
   </script>
 </body>
 </html>
