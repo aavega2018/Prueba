@@ -175,27 +175,42 @@ document.getElementById("bookingForm").addEventListener("submit", async (e) => {
   };
 
   try {
-    const res = await fetch(SCRIPT_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
+  try {
+  const res = await fetch(SCRIPT_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
 
-    const data = await res.json();
+  console.log("HTTP status:", res.status);
 
-    if (data.ok) {
-      status.textContent = "Turno reservado correctamente.";
-      status.className = "status ok";
-      bookingForm.reset();
-    } else {
-      status.textContent = data.mensaje;
-      status.className = "status error";
-    }
+  const raw = await res.text();
+  console.log("Respuesta cruda:", raw);
 
-  } catch (err) {
-    status.textContent = "Error de conexión.";
+  let data;
+  try {
+    data = JSON.parse(raw);
+  } catch {
+    status.textContent = "El servidor no devolvió JSON válido.";
+    status.className = "status error";
+    return;
+  }
+
+  if (data.ok) {
+    status.textContent = "Turno reservado correctamente.";
+    status.className = "status ok";
+    bookingForm.reset();
+  } else {
+    status.textContent = data.mensaje;
     status.className = "status error";
   }
+
+} catch (err) {
+  console.error("Error en fetch:", err);
+  status.textContent = "Error de conexión (no se pudo contactar al servidor).";
+  status.className = "status error";
+}
+
 });
 
 document.getElementById("cancelForm").addEventListener("submit", async (e) => {
