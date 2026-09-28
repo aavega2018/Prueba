@@ -148,97 +148,92 @@
     <div id="status" class="status"></div>
   </main>
 
-  <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwGxh9EWvzqSU-TQNHvLfeStIL4Mfk5oPqAmftVumig5EW667nmoEvglLYEg8GtOXMJIw/exec";
+<script>
+const SCRIPT_URL = "TU_URL_NUEVA_DEL_WEBAPP";
 
-    function validarHora(horaStr) {
-      const [h, m] = horaStr.split(":").map(Number);
-      const totalMin = h * 60 + m;
-      return totalMin >= 480 && totalMin <= 1080;
+function validarHora(horaStr) {
+  const [h, m] = horaStr.split(":").map(Number);
+  const totalMin = h * 60 + m;
+  return totalMin >= 480 && totalMin <= 1080;
+}
+
+document.getElementById("bookingForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const status = document.getElementById("status");
+  status.textContent = "Procesando...";
+  status.className = "status";
+
+  const payload = {
+    action: "create",
+    nombre: nombre.value.trim(),
+    telefono: telefono.value.trim(),
+    direccion: direccion.value.trim(),
+    fecha: fecha.value,
+    hora: hora.value,
+    servicio: servicio.value
+  };
+
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+
+    if (data.ok) {
+      status.textContent = "Turno reservado correctamente.";
+      status.className = "status ok";
+      bookingForm.reset();
+    } else {
+      status.textContent = data.mensaje;
+      status.className = "status error";
     }
 
-    /*************************************************
-     * RESERVAR
-     *************************************************/
-    document.getElementById("bookingForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
+  } catch (err) {
+    status.textContent = "Error de conexión.";
+    status.className = "status error";
+  }
+});
 
-      const status = document.getElementById("status");
-      status.textContent = "Procesando...";
-      status.className = "status";
+document.getElementById("cancelForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-      const payload = {
-        action: "create",
-        nombre: nombre.value.trim(),
-        telefono: telefono.value.trim(),
-        direccion: direccion.value.trim(),
-        fecha: fecha.value,
-        hora: hora.value,
-        servicio: servicio.value
-      };
+  const status = document.getElementById("status");
+  status.textContent = "Procesando...";
+  status.className = "status";
 
-      try {
-        const res = await fetch(SCRIPT_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
+  const payload = {
+    action: "cancel",
+    reservaId: reservaId.value.trim()
+  };
 
-        const data = await res.json();
-
-        if (data.ok) {
-          status.textContent = "Turno reservado correctamente.";
-          status.className = "status ok";
-          bookingForm.reset();
-        } else {
-          status.textContent = data.mensaje;
-          status.className = "status error";
-        }
-
-      } catch (err) {
-        status.textContent = "Error de conexión.";
-        status.className = "status error";
-      }
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
     });
 
-    /*************************************************
-     * CANCELAR
-     *************************************************/
-    document.getElementById("cancelForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
+    const data = await res.json();
 
-      const status = document.getElementById("status");
-      status.textContent = "Procesando...";
-      status.className = "status";
+    if (data.ok) {
+      status.textContent = "Cancelación realizada.";
+      status.className = "status ok";
+      cancelForm.reset();
+    } else {
+      status.textContent = data.mensaje;
+      status.className = "status error";
+    }
 
-      const payload = {
-        action: "cancel",
-        reservaId: reservaId.value.trim()
-      };
+  } catch (err) {
+    status.textContent = "Error de conexión.";
+    status.className = "status error";
+  }
+});
+</script>
 
-      try {
-        const res = await fetch(SCRIPT_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-
-        const data = await res.json();
-
-        if (data.ok) {
-          status.textContent = "Cancelación realizada.";
-          status.className = "status ok";
-          cancelForm.reset();
-        } else {
-          status.textContent = data.mensaje;
-          status.className = "status error";
-        }
-
-      } catch (err) {
-        status.textContent = "Error de conexión.";
-        status.className = "status error";
-      }
-    });
-  </script>
 </body>
 </html>
