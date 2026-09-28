@@ -176,26 +176,21 @@ document.getElementById("bookingForm").addEventListener("submit", async (e) => {
 
   try {
     const res = await fetch(SCRIPT_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(payload)
+});
 
-    const data = await res.json();
+const data = await res.json();
 
-    if (data.ok) {
-      status.textContent = "Turno reservado correctamente.";
-      status.className = "status ok";
-      bookingForm.reset();
-    } else {
-      status.textContent = data.mensaje;
-      status.className = "status error";
-    }
-
-  } catch (err) {
-    status.textContent = "Error de conexión.";
-    status.className = "status error";
-  }
+if (data.ok) {
+  status.textContent = "Turno reservado correctamente.";
+  status.className = "status ok";
+  bookingForm.reset();
+} else {
+  status.textContent = data.mensaje;
+  status.className = "status error";
+}
 });
 
 document.getElementById("cancelForm").addEventListener("submit", async (e) => {
@@ -212,26 +207,21 @@ document.getElementById("cancelForm").addEventListener("submit", async (e) => {
 
   try {
     const res = await fetch(SCRIPT_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(payload)
+});
 
-    const data = await res.json();
+const data = await res.json();
 
-    if (data.ok) {
-      status.textContent = "Cancelación realizada.";
-      status.className = "status ok";
-      cancelForm.reset();
-    } else {
-      status.textContent = data.mensaje;
-      status.className = "status error";
-    }
-
-  } catch (err) {
-    status.textContent = "Error de conexión.";
-    status.className = "status error";
-  }
+if (data.ok) {
+  status.textContent = "Cancelación realizada.";
+  status.className = "status ok";
+  cancelForm.reset();
+} else {
+  status.textContent = data.mensaje;
+  status.className = "status error";
+}
 });
 </script>
 </body>
